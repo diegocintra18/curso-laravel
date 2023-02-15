@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrUpdateProductsRequest;
+use App\Models\Products;
 use Illuminate\Http\Request;
 
 class ProductsController extends Controller
@@ -14,7 +15,19 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        //
+        // $products = Products::rightJoin("brands", "products.brand_id", "=", "brands.id")
+        // ->select(
+        //     "products.id",
+        //     "products.name",
+        //     "sku",
+        //     "brand_id",
+        //     "brands.name as brand_name"
+        // )
+        // ->get();
+
+        $products = Products::get();
+
+        return view("products.index", ["products" => $products]);
     }
 
     /**
@@ -42,7 +55,18 @@ class ProductsController extends Controller
 
         $data = $request->all();
 
-        dd($data);
+        //$product = Products::create($data);
+
+        $product = new Products();
+        $product->name = $request->name;
+        $product->sku = $request->sku;
+        $product->product_description = $request->product_description;
+
+        $product->save();
+
+        dd($product);
+
+        return redirect()->back()->with("error", "Erro ao cadastrar o produto");
     }
 
     /**
@@ -53,7 +77,25 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        //
+        $products = [
+            0 => [
+                "product_name" => "Produto 1",
+                "sku"          => "123",
+                "description"  => "Exemplo de descricção"
+            ],
+            1 => [
+                "product_name" => "Produto 2",
+                "sku"          => "456",
+                "description"  => "Exemplo de descricção"
+            ],
+            2 => [
+                "product_name" => "Produto 3",
+                "sku"          => "789",
+                "description"  => "Exemplo de descricção"
+            ]
+        ];
+
+        return view("products.show", ["product" => $products[$id]]);
     }
 
     /**
@@ -64,7 +106,9 @@ class ProductsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $product = Products::find($id);
+
+        return view("products.edit", ["product" => $product]);
     }
 
     /**
@@ -74,9 +118,13 @@ class ProductsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreOrUpdateProductsRequest $request, $id)
     {
-        //
+        $product = Products::where("id", $id)->update([
+            "name" => $request->name,
+            "product_description" => $request->product_description
+        ]);
+        dd($product);
     }
 
     /**
@@ -87,6 +135,7 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Products::where("id", $id)->delete();
+        return "Registro deletado com sucesso!";
     }
 }

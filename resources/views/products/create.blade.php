@@ -25,11 +25,14 @@
                 </ul>
             </div>
         @endif
+        @if(session("error"))
+            {{session("error")}}
+        @endif
         <form action="{{ route("products.store") }}" method="POST">
             @csrf
             <div class="form-group">
               <label for="exampleInputEmail1">Nome do Produto</label>
-              <input type="text" class="form-control" name="product_name" value="{{ old('product_name') }}" >
+              <input type="text" class="form-control" name="name" value="{{ old('product_name') }}" >
             </div>
             <div class="form-group">
               <label for="exampleInputPassword1">Código do Produto</label>
@@ -37,7 +40,7 @@
             </div>
             <div class="form-group">
                 <label for="">Descrição</label>
-                <textarea name="description" class="form-control" id="" cols="30" rows="10"></textarea>
+                <textarea name="product_description" class="form-control" id="" cols="30" rows="10"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
