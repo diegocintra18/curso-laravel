@@ -1,13 +1,22 @@
 @extends('adminlte::page')
 
-@section('title', 'Dashboard')
+@section('title', 'Produtos')
 
 @section('content_header')
-    <h1>Dashboard</h1>
+    <div class="row">
+        <div class="col-11">
+            <h1>Produtos</h1>
+        </div>
+        <div class="col-1">
+            <button class="btn btn-success">Adicionar</button>
+        </div>
+    </div>
 @stop
 
 @section('content')
-    <p>Welcome to this beautiful admin panel.</p>
+<div class="container-fluid">
+    <x-product-list :products="$products" />
+</div>
 @stop
 
 @section('css')
