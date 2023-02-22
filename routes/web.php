@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\ExampleController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,9 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get("/hello/{text}", [ExampleController::class, "printHelloWorld"]);
-
-Route::prefix("/admin")->group(function(){
+Route::middleware('auth')->prefix("/admin")->group(function(){
     Route::get("/produtos", [ProductsController::class, "index"])->name("products.index");
     Route::get("/cadastrar-produto", [ProductsController::class, "create"])->name("products.create");
     Route::post("/salvar-produto", [ProductsController::class, "store"])->name("products.store");
@@ -30,3 +28,19 @@ Route::prefix("/admin")->group(function(){
     Route::post("/atualizar-produto/{id}", [ProductsController::class, "update"])->name("products.update");
     Route::get("/excluir-produto/{id}", [ProductsController::class, "destroy"])->name("products.destroy");
 });
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
