@@ -25,7 +25,7 @@ class ProductsController extends Controller
         // )
         // ->get();
 
-        $products = Products::get();
+        $products = Products::get()
 
         return view("products.index", ["products" => $products]);
     }
